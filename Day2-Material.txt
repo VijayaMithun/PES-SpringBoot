@@ -1,0 +1,495 @@
+1. Creating Java Beans (Player1, Player2) with properties like id, name, and email.
+2. Configuring Beans in XML (doctor.xml) to set values for those properties.
+3. Using Spring's IoC Container (ApplicationContext) in Coach.java to load the beans and print them.
+4.  Inversion of Control (IoC):
+You didn’t create Player1 or Player2 manually using new.
+5. Instead, Spring created and injected them based on XML config.
+6. Dependency Injection (DI):
+You are injecting values (id, name, email) into objects using XML <property> tags.
+-----------------------------------------------------------------
+Advantages of Dependency Injection
+> Reduces object dependencies in the application
+> Enables unit testing with mock implementations
+> Encourages loose coupling and decoupling
+> Promotes code reuse across applications
+> Supports logical abstraction of components
+--------------------------------------------------------
+Spring Container:
+> Spring container creates, configures, and manages beans
+> It uses configuration metadata to know what to do
+> Metadata can be in XML, annotations, or Java code
+> Manages the full life cycle of beans
+> Assembles dependencies between beans automatically.
+-------------------------------------------------------
+What Is a Spring Bean?
+ Spring beans are Java objects that are managed by the Spring container.
+-------------------------------------------------------
+Dependency Injection: 
+> Spring can handles DI automatically.
+> Objects get required things (dependencies) from outside.
+> It Makes code loose and easy to manage.
+
+Types:
+Constructor – via constructor
+Setter – via setter method
+Field – directly in variable (less preferred)
+
+Benefits:
+Easy to test
+Easy to maintain
+Ways to configure:
+
+XML
+Annotations (@Autowired)
+Java config (@Bean)
+------------------------------------------------------------
+What is Spring Boot? 
+> Spring Boot is a framework to build Spring-based applications quickly and easily.
+> It removes the need for complex configurations.
+> Comes with an embedded server (like Tomcat) – no need to deploy WAR files.
+> Provides starter templates (called Starters) to add features easily (like web, JPA, security).
+> Supports auto-configuration 
+> Works well for building REST APIs and microservices.
+> Includes Spring Initializr to create projects fast.
+-------------------------------------------------------------
+RAD (Rapid Application Development) means developing apps faster with less code and less setup.
+
+Spring Boot helps RAD by:
+> Auto Configuration – It configures things automatically.
+> Embedded Server – No need to install Tomcat separately.
+> Starter Dependencies – Predefined templates to add features easily.
+> Minimal Code – Less boilerplate code needed.
+> Spring Initializr – Quickly generate project structure online.
+-------------------------------------------------
+What is Maven?	
+> Can Manage dependencies
+> Can maintain proper structure
+> Can build the code for us
+> Can create documentation sites.
+-------------------------------------------------
+What are the main features of Maven?	
+Simple to use , Fast, Easy to learn, Dependency management ,Multiple Projects , Huge Library: Maven has a large and growing repository 
+------------------------------------------------
+What is Groupid ? 	
+> It denotes a company name. 
+> Indicates the unique identifier of the organization or group that created the project.
+
+Example:
+
+<groupId>com.google</groupId>
+<artifactId>search-engine</artifactId>
+<version>1.0.0</version>
+ 
+com.google → Google's reverse domain name (company identity)
+search-engine → The name of the specific project or module
+1.0.0 → Version number of this project
+---------------------------------------------
+What is dependency in Maven?	
+> A dependency is a library or jar.
+> Needed by the application for building, at compile and/or test and/or runtime time.
+------------------------------------------------
+What is the difference between Snapshot and Version?	
+Snapshot
+> A snapshot in Maven is one that has not been released. 
+> Snapshots might get updates.  
+
+Version
+> Its released properly
+-------------------------------------------------
+Scaffolding Spring Boot projects:
+
+> Generating the pom.xml (for Maven) or build.gradle (for Gradle)
+> Creating the main class (with @SpringBootApplication)
+> Setting up the directory structure (src/main/java, src/main/resources)
+>Creating a basic controller, if selected
+> Adding basic application.properties or application.yml
+>Including selected dependencies (like Spring Web, JPA, Security, etc.)
+------------------------------------------
+> open the sub folder in cmd (ex : PS C:\PES-Java\demo1\demo1> )
+>  code .
+---------------------------------------------
+What is REST API?
+> REST stands for Representational State Transfer.
+> It is a way of communication between client and server over the internet.
+> Uses standard HTTP methods like GET, POST, PUT, DELETE.
+> Sends and receives data in formats like JSON or XML.
+> Each resource (like a home, user, product) is accessed by a URL.
+> It is stateless – each request is independent.
+> Commonly used in web and mobile apps to connect frontend with backend.
+----------------------------------------------
+Annotations:
+
+> Annotations are special symbols starting with @.
+> They provide metadata (extra information) to the compiler or runtime.
+> Used to tell the compiler or framework how to treat code.
+> Do not change the actual logic, just give instructions.
+> Commonly used in Spring, JUnit, Hibernate, etc. 
+> Example in java (@Override)
+----------------------------------------------
+package com.example.FirstBoot;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class SampleApi {
+    @GetMapping("/")
+    public String getSample() {
+        return "This is Home Page!";
+    }
+
+    @GetMapping("/register")
+    public String greetings() {
+        return "This is register page!";
+    }
+}
+
+/*
+@RestController :
+> Create REST APIs easily.
+> Return JSON or XML data directly to the client.
+> Avoid writing @ResponseBody on every method.
+> Handle HTTP requests like GET, POST, PUT, DELETE.
+> Build web services without using views or HTML pages.
+
+@GetMapping
+> It is used to handle HTTP GET requests.
+> Placed above a method in a controller.
+> Maps a URL to that method.
+> Used to fetch or read data from the server.
+> Common in REST APIs for getting information.
+*/
+===============================================================
+Example 2:
+-----------------
+package com.example.SecondBoot;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Technologies {
+    private int techid = 101;
+    private String techname = "Spring Boot";
+
+    public int getTechid() {
+        return techid;
+    }
+
+    public void setTechid(int techid) {
+        this.techid = techid;
+    }
+
+    public String getTechname() {
+        return techname;
+    }
+
+    public void setTechname(String techname) {
+        this.techname = techname;
+    }
+
+    public void techdisplay() {
+        System.out.println("Technology Details:");
+        System.out.println("Tech ID   : " + techid);
+        System.out.println("Tech Name : " + techname);
+    }
+}
+
+/*
+@Component 
+> It is used to mark a class as a Spring bean.
+> Spring will automatically detect and manage the class.
+> Enables dependency injection (using @Autowired).
+> Used for generic components like helpers or services.
+*/
+-----------------------
+package com.example.SecondBoot;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Students {
+    private int stuid = 1;
+    private String stuname = "Arun";
+
+    @Autowired
+    private Technologies techdet;
+
+    public Technologies getTechdet() {
+        return techdet;
+    }
+
+    public void setTechdet(Technologies techdet) {
+        this.techdet = techdet;
+    }
+
+    public int getStuid() {
+        return stuid;
+    }
+
+    public void setStuid(int stuid) {
+        this.stuid = stuid;
+    }
+
+    public String getStuname() {
+        return stuname;
+    }
+
+    public void setStuname(String stuname) {
+        this.stuname = stuname;
+    }
+
+    public void display() {
+        System.out.println("Student Details:");
+        System.out.println("Student ID   : " + stuid);
+        System.out.println("Student Name : " + stuname);
+        techdet.techdisplay();
+    }
+}
+
+/*
+@Autowired in Spring:
+
+> Used to automatically inject dependencies.
+> Tells Spring to create and provide the required object.
+> Helps in loose coupling between classes.
+> Can be used on constructors, fields, or setters.
+> Works only on Spring-managed beans
+*/
+------------------
+package com.example.SecondBoot;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+
+@SpringBootApplication
+@ComponentScan
+public class SecondBootApplication {
+
+	public static void main(String[] args) {
+		ConfigurableApplicationContext context = SpringApplication.run(SecondBootApplication.class, args);
+		// SpringApplication.run(Boot2Application.class, "--server.port=8084");
+		Students s = (Students) context.getBean(Students.class);
+		s.display();
+
+		context.close();
+
+	}
+
+}
+
+/*
+@ComponentScan:
+> Tells Spring where to look for components (@Component, @Service, etc.).
+> It scans the package and its sub-packages for Spring beans.
+> Used with @Configuration or @SpringBootApplication.
+> Helps Spring auto-detect and register beans in the context.
+> Without it, Spring may miss your classes.
+*/
+===============================================================
+Example 3:
+
+Create Home.html under resources/static
+
+<html>
+
+   <head>
+      <title>HTML marquee Tag</title>
+   </head>
+	
+   <body>
+      <marquee direction = "up">Home Text</marquee>
+   </body>
+	
+</html>
+-----------
+Create Login.html under resources/static
+
+<html>
+
+   <head>
+      <title>HTML marquee Tag</title>
+   </head>
+	
+   <body>
+      <marquee direction = "up">Login Text</marquee>
+   </body>
+	
+</html>
+------------
+package com.Third;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class ShoppingController {
+    @RequestMapping("/")
+    public String homehtml() {
+        return "home.html";
+    }
+
+    @RequestMapping("/login")
+    public String loginhtml() {
+        return "login.html";
+    }
+}
+
+/*
+@Controller:
+> Used to define a web controller class.
+> Handles HTTP requests and returns HTML views (web pages).
+> Works with Thymeleaf, JSP, or other view technologies.
+> Used in traditional MVC web applications.
+*/
+----------
+@SpringBootApplication
+@ComponentScan
+public class ThirdApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ThirdApplication.class, args);
+	}
+
+}
+======================================================================
+Example 4:
+
+Continuation of the above project
+
+package com.Fourth;
+
+public class Product {
+    private int id;
+    private String pname;
+    private double price;
+    private int noofproduct;
+
+    public Product() {
+    }
+
+    public Product(int id, String pname, double price, int noofproduct) {
+        this.id = id;
+        this.pname = pname;
+        this.price = price;
+        this.noofproduct = noofproduct;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getPname() {
+        return pname;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getNoofproduct() {
+        return noofproduct;
+    }
+
+}
+------------------------------
+package com.Fourth;
+
+import java.util.List;
+
+public interface IProductService {
+    List<Product> findAll();
+
+}
+-------------------------------
+package com.Fourth;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductService implements IProductService {
+    @Override
+    public List<Product> findAll() {
+        // creating an object of ArrayList
+        ArrayList<Product> products = new ArrayList<Product>();
+        // adding products to the List
+        products.add(new Product(100, "Mobile", 9000.00, 6));
+        products.add(new Product(101, "Smart TV", 60000.00, 3));
+        products.add(new Product(102, "Washing Machine", 9000.00, 7));
+        products.add(new Product(103, "Laptop", 24000.00, 1));
+        products.add(new Product(104, "Air Conditioner", 30000.00, 5));
+        products.add(new Product(105, "Refrigerator ", 10000.00, 4));
+        // returns a list of product
+        return products;
+    }
+}
+
+/*
+@Service :
+> Used to mark a service class (business logic layer).
+> It is a specialized version of @Component.
+> Tells Spring to create and manage the object as a bean.
+> Helps in writing business logic separate from controller and repository.
+> Supports dependency injection using @Autowired.
+*/
+--------------------------
+package com;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping; 
+import org.springframework.web.bind.annotation.ResponseBody; 
+
+@Controller
+public class ShoppingController {
+
+    @Autowired
+    private IProductService productService;
+
+    // Loads Home.html from static folder
+    @GetMapping("/")
+    public String homehtml() {
+        return "Home.html";
+    }
+
+    // Loads Login.html from static folder
+    @GetMapping("/login")
+    public String loginhtml() {
+        return "Login.html";
+    }
+
+    // Return JSON list of Products
+    @GetMapping("/product")
+    @ResponseBody
+    public List<Product> getAllProducts() {
+        return productService.findAll();
+    }
+}
+/*
+@Controller:
+> Used to define a web controller class.
+> Handles HTTP requests and returns HTML views (web pages).
+> Works with Thymeleaf, JSP, or other view technologies.
+> Used in traditional MVC web applications.
+*/
+------------------
+
+@SpringBootApplication
+@ComponentScan
+public class ShoppingCartApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ShoppingCartApplication.class, args);
+	}
+
+} 
+=======================================================================
+
+

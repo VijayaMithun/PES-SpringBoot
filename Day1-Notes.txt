@@ -1,0 +1,437 @@
+Session1 :
+
+Recap of essential Java OOP concepts (Classes, Objects, Inheritance, Polymorphism, etc.). Overview of core Java APIs (Collections, Streams). Introduction to HTTP Protocol, Client-Server Architecture, and RESTful API principles.
+--------------------------------------------------------------------------------
+OOPS - Object Oriented Programming System / Structure.
+Class, object, Encapsulation, Abstraction, inheritance, Polymorphism, Dynamic binding, Message passing
+------------------------------------------
+Keywords :
+In C - 32 
+In java - 50 (Initially)
+From version 8 - Added 3 Keywords - True, False and null (53 Keywords)
+------------------------------------------
+To Compile a java Program 
+> javac Prg1.java
+if you compile a java program - JVM generates class files.
+Class files contains only byte code.
+JRE - Can run a byte code.
+
+To run a java Program
+> java Prg1
+----------------------------------------
+class Emp  // class is a keyword , Emp is a name of userdefined class
+{
+public void method() // public - one of the access specifier , method name
+{
+	System.out.println("From Emp Method");	
+}
+}
+class Prg1  // class is a keyword , Prg1 is a name of userdefined class
+{
+// There are 4 storage classes in C . 1. auto 2. static 3. register 4. extern
+	// java support only static . 
+	// use of static - can retain a value or method throughout the program
+public static void main(String args[]) // String, System - predefined class.
+// in java always the predefined classes starts with capital letter.
+// args[] - array object
+{
+	Emp e=new Emp();
+	e.method();
+System.out.println("Welcome to Java");
+}
+}
+/*
+Emp e=new Emp();
+new Emp() - can create object
+e- reference variable 
+*/
+------------------------------------------
+import java.util.Scanner;
+class Emp
+{
+	String name;
+	int salary;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getSalary() {
+		return salary;
+	}
+	public void setSalary(int salary) {
+		this.salary = salary;
+	}	
+}
+public class Prg2 {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		Emp e=new Emp();
+		System.out.println("Enter Name : ");
+		e.setName(sc.next());
+		System.out.println("Enter Salary : ");
+		e.setSalary(sc.nextInt());
+		System.out.println("Name is : "+ e.getName()+ "\nSalary is : "+e.getSalary());
+	}
+
+}
+-------------------------------------------------------------------------
+Example of Inheritance:
+
+import java.util.Scanner;
+class Emp
+{
+	String name;
+	int salary;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getSalary() {
+		return salary;
+	}
+	public void setSalary(int salary) {
+		this.salary = salary;
+	}	
+}
+class Manager extends Emp
+{
+	String Mname;
+	int msal;
+	public String getMname() {
+		return Mname;
+	}
+	public void setMname(String mname) {
+		Mname = mname;
+	}
+	public int getMsal() {
+		return msal;
+	}
+	public void setMsal(int msal) {
+		this.msal = msal;
+	}	
+}
+public class Prg3 {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		Manager e=new Manager();
+		System.out.println("Enter Name : ");
+		e.setName(sc.next());
+		System.out.println("Enter Salary : ");
+		e.setSalary(sc.nextInt());
+		System.out.println("Name is : "+ e.getName()+ "\nSalary is : "+e.getSalary());
+		System.out.println("Enter Manager Name : ");
+		e.setMname(sc.next());
+		System.out.println("Enter Manager Salary : ");
+		e.setMsal(sc.nextInt());
+		System.out.println("Manager Name is : "+ e.getMname()+ "\nManager Salary is : "+e.getMsal());
+	}
+
+}
+---------------------------------------------------------------------------
+Polymorphism:
+Same name , can use in different form.
+1. Static
+    1. function / method / constructor overloading
+    2. Operator Overloading (Java Doesn't support). C++ and C# supports operator overloading
+
+2. Dynamic
+    1. Override
+
+-------------------------------- 
+Function Overloading
+public class Prg4 {
+	public static void meth() // if you use static in a method, its called function
+	{
+		System.out.println("From default method");
+	}
+	public static void meth(int sal)
+	{
+		System.out.println("From Single Parameter method : " + sal);
+	}
+	public static void meth(int sal,int inc)
+	{
+		System.out.println("From Two Parameter method : " + (sal+inc));
+	}
+	public static void main(String[] args) {
+		 meth();
+		 meth(150000);
+		 meth(150000,20000);
+	}
+}
+// https://shorturl.at/TqsAb
+--------------------------------------
+Method Overloading
+
+class PES
+{
+	public  void meth() 
+	{
+		System.out.println("From default method");
+	}
+	public  void meth(int sal)
+	{
+		System.out.println("From Single Parameter method : " + sal);
+	}
+	public  void meth(int sal,int inc)
+	{
+		System.out.println("From Two Parameter method : " + (sal+inc));
+	}
+}
+public class Prg4 {	
+	public static void main(String[] args) {
+		PES p=new PES();
+		 p.meth();
+		 p.meth(150000);
+		 p.meth(150000,20000);
+	}
+}
+// https://shorturl.at/TqsAb
+----------------------------------------------------
+Example of Constructor Overloading:
+
+class PES
+{
+	public PES()
+	{
+		System.out.println("From default constructor");
+	}
+	public PES(int sal)
+	{
+		System.out.println("From Single para constructor : " + sal);
+	}
+	public PES(int sal,int inc)
+	{
+		System.out.println("From Two para constructor : " + (sal+inc));
+	}
+}
+public class Prg5 {
+	public static void main(String[] args) {
+		 PES p=new PES(); // default construct invoked
+		 p=new PES(120000); //  Sigle para construct invoked
+		 p=new PES(120000,30000); //  Two para construct invoked		 
+	}
+}
+/*
+ Constructor: If a class name and method name are same , the method is called as constructor.
+ Whenever you create object to a class , the constructor invoke automatically.
+ You no need to call a constructor.
+ If you try to call like methods, it returns error.
+ A constructor should be public
+ There is no return type to a constructor.
+ */
+----------------------------------------------------------------
+Collections:
+Collections Vs Arrays:
+
+Arrays:
+Same datatype
+Fixed size
+
+Collection:
+different datatypes and different mode
+Dynamic size
+---------------------------------------------------------------
+Example using ArrayList:
+
+import java.util.ArrayList;
+public class Prg6 {
+
+	public static void main(String[] args) {
+		ArrayList lst=new ArrayList(); // ArrayList allows Duplicate
+		lst.add("Java");
+		lst.add(100);
+		lst.add(50.50);
+		lst.add("Java");
+		lst.add(null);
+		lst.add(100);
+		lst.add("Java");
+		lst.add(null); // Supports null value
+		System.out.println(lst);
+	}
+
+}
+-------------------------------------------
+Example using HashSet:
+import java.util.HashSet;
+
+public class Prg6 {
+
+	public static void main(String[] args) {
+		HashSet lst=new HashSet(); // HashSet doesn't allows Duplicate
+		lst.add("Java");
+		lst.add(100);
+		lst.add(50.50);
+		lst.add("Java");
+		lst.add(null);// allows only one null value
+		lst.add(100);
+		lst.add("Java");
+		lst.add(null);  
+		System.out.println(lst);
+	}
+
+}
+-----------------------------------------------
+Example using HashMap:
+import java.util.HashMap;
+
+public class Prg6 {
+
+	public static void main(String[] args) {
+		HashMap lst=new HashMap(); // HashMap get data at the form of keys and values
+		lst.put(1,"Java");
+		lst.put(2,100);
+		lst.put(3,50.50);
+		lst.put(4,"J2ee");
+		lst.put(5,null); 
+		System.out.println(lst); // Print data like python dictionary
+	}
+}
+-----------------------------------------------
+Java Streams:
+> introduced From version 8
+> using streams can avoid boiler plate code.
+> Can write program with minimal statements
+> import java.util.stream.Stream;
+-----------------------------------------------
+Example :
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+
+public class Prg6 {
+
+	public static void main(String[] args) {
+    System.out.println(Arrays.asList(5,6,7,9,4).stream().filter(n1->n1%2==0).reduce(0,Integer::sum));
+  	}
+
+}
+/*Not using Array format
+ * Not using any for loop
+ * Not using any if condition
+ *  Not doing accumulate values
+ *  And Printing final list
+ */
+=========================================================================
+Session 2:
+
+What is Spring Framework? Need for frameworks. Core modules of Spring (brief overview). Deep dive into Inversion of Control (IoC) and Dependency Injection (DI) - core principles, benefits, and examples.
+The Spring Container (Application Context). Bean definition, Bean lifecycle, Bean scopes (Singleton, Prototype, etc.). Configuring beans using XML and Annotations (briefly touch upon XML, focus on Annotations as Spring Boot favors them).
+
+--------------------------------------------------
+What is Spring Framework? 
+
+Spring Framework provides comprehensive infrastructure support for developing Java applications. 
+Spring handles the infrastructure so you can focus on your application.
+
+Simple Example to Understand Spring -  Spring gives a infrastructure like  join into a residency school
+------------------------------
+https://shorturl.at/49zae
+
+https://pastebin.com/n7rtKswG
+--------------------------------
+Example 1:
+---------------
+package com;
+
+public class Player1 {
+	int id;
+	String name;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Player1() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public String toString() {
+		return "Player1 [id=" + id + ", name=" + name + "]";
+	}
+	
+}
+----------------
+package com;
+
+public class Player2 {
+	int id;
+	String name;
+	String email;
+	public Player2() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	@Override
+	public String toString() {
+		return "Player2 [id=" + id + ", name=" + name + ", email=" + email + "]";
+	}
+	
+}
+-------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns = "http://www.springframework.org/schema/beans"
+   xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation = "http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+   
+   <bean id="play1" class="com.Player1" >
+   <property name = "id" value="101"/>
+      <property name="name" value="XYZ"/>
+   </bean>
+     <bean id="play2" class="com.Player2" >
+   <property name = "id" value="102"/>
+      <property name="name" value="ABC"/>
+      
+      <property name="email" value="ABC@gmail.com"/>
+   </bean>
+   </beans>
+--------------------------------
+package com;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Coach {
+
+	public static void main(String[] args) {
+		ApplicationContext context = new ClassPathXmlApplicationContext("doctor.xml");
+	      Player1 obj1 = (Player1) context.getBean("play1");
+	      System.out.println(obj1);
+	      
+	      Player2 obj2 = (Player2) context.getBean("play2");
+	      System.out.println(obj2);
+	}
+}
+-------------------------------------------
+
