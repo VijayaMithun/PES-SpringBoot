@@ -1,0 +1,374 @@
+Deep dive into @RestController, @Controller annotations. Request Mappings (@RequestMapping, @GetMapping, @PostMapping, etc.). Handling Request Parameters (@RequestParam), Path Variables (@PathVariable).
+Handling Request Body (@RequestBody). Constructing Response Bodies (@ResponseBody, ResponseEntity). Returning different HTTP Status Codes. Content Negotiation (JSON by default).
+Data Validation using Bean Validation API (@Valid, @NotNull, etc.). Handling validation errors. Global Exception Handling using @ControllerAdvice and @ExceptionHandler. Best practices for REST API error responses.
+Building a REST API for a simple resource (e.g., "Greeting"). Implementing endpoints for GET, POST requests. Handling request parameters, path variables, and request/response bodies. Implementing basic validation.
+---------------------------------------------------------------------
+Example 6:
+
+Dependencies:
+> spring-boot-starter-web 
+> spring-boot-devtools  
+> spring-boot-starter-test 
+> jakarta.validation-api 
+> hibernate-validator 
+
+package com;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public class Employee {
+    private int id;
+
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    @NotNull(message = "Salary must not be null")
+    private Double salary;
+
+    // Constructors
+    public Employee() {
+    }
+
+    public Employee(int id, String name, Double salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
+    }
+}
+/*
+@NotNull:
+
+> Checks that value is not null.
+> Allows empty strings, but not null values.
+> Used for any object type.
+
+@NotBlank:
+> Checks that value is not null and not empty.
+> Also trims spaces and checks that it's not just whitespace.
+> Only used for Strings.
+*/
+------------------------
+package com;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(errors);
+    }
+}
+
+/*
+@ControllerAdvice
+> Used for global exception handling, data binding, or model attributes.
+> Applies to all controllers in the application.
+> Makes code clean and centralized.
+> Often used with @ExceptionHandler to handle errors globally.
+*/
+------------------------
+package com;
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
+
+@RestController
+@RequestMapping("/api/employees")
+public class EmployeeController {
+
+    private final Map<Integer, Employee> employeeMap = new HashMap<>();
+
+    // GET all employees
+    @GetMapping // http://localhost:8080/api/employees
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        return ResponseEntity.ok(new ArrayList<>(employeeMap.values()));
+    }
+
+    // GET by ID (PathVariable)
+    @GetMapping("/{id}") // http://localhost:8080/api/employees/101
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable int id) {
+        Employee emp = employeeMap.get(id);
+        if (emp == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(emp);
+    }
+
+    // POST - create new employee
+    @PostMapping // http://localhost:8080/api/employees
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) {
+        employeeMap.put(employee.getId(), employee);
+
+        // Save all employees to a single JSON file
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            File file = new File("all_employees.json");
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, employeeMap.values());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.status(201).body(employee);
+    }
+
+    // GET by name (RequestParam)
+    @GetMapping("/search") // http://localhost:8080/api/employees/search?name=DDD
+    public ResponseEntity<Employee> getEmployeeByName(@RequestParam String name) {
+        return employeeMap.values().stream()
+                .filter(e -> e.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // DELETE employee by ID
+    @DeleteMapping("/{id}") // http://localhost:8080/api/employees/101
+    public ResponseEntity<String> deleteEmployeeById(@PathVariable int id) {
+        if (employeeMap.containsKey(id)) {
+            employeeMap.remove(id);
+
+            // Save the updated list to JSON file
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                File file = new File("all_employees.json");
+                mapper.writerWithDefaultPrettyPrinter().writeValue(file, employeeMap.values());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return ResponseEntity.ok("Employee with ID " + id + " deleted successfully.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
+/*
+@RequestMapping
+
+> Used to map HTTP requests to controller methods.
+> Can be used at class or method level.
+> Works for all HTTP methods (GET, POST, etc.).
+> More flexible but now often replaced by @GetMapping, @PostMapping, etc.
+
+ObjectMapper in Spring Boot:
+
+> Comes from Jackson library.
+> Used to convert between Java objects and JSON.
+> Can read JSON to Java (deserialize).
+> Can write Java to JSON (serialize).
+> Often used in REST APIs.
+
+
+ResponseEntity in Spring Boot:
+
+> Represents the full HTTP response.
+> Lets you control:
+> Response body
+> Status code
+> Headers
+> Used in REST APIs to return custom responses.
+> Helps in sending success, error, or custom messages.
+
+@RequestParam in Spring Boot:
+
+> Used to get values from the query string in the URL.
+> Binds the request parameter to a method parameter.
+> Commonly used in GET requests.
+> You can set default values or make it optional.
+
+
+@RequestBody in Spring Boot:
+> Used to read JSON (or XML) from the HTTP request body.
+> Converts it into a Java object automatically.
+> Commonly used in POST, PUT, or PATCH methods.
+> Requires a matching POJO (Plain Old Java Object).
+> Needs a library like Jackson for JSON conversion (included in Spring Boot).
+
+@Valid in Spring Boot:
+
+> Used to trigger validation on objects.
+> Works with annotations like @NotNull, @NotBlank, etc.
+> Placed before a method parameter (usually a request body).
+> Automatically checks for validation errors.
+*/
+----------------------
+package com;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SixthBootApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(SixthBootApplication.class, args);
+	}
+
+}
+
+/*
+
+sample data:
+
+ * {
+ * "id": 104,
+ * "name": "DDD",
+ * "salary": 4000
+ * }
+ */
+==========================================================================
+Example 7
+
+Continuation of previous example:
+// To add a separate Address module with full CRUD operations, and integrate it into the Employee class
+ 
+
+package com;
+
+import jakarta.validation.constraints.NotBlank;
+
+public class Address {
+
+    @NotBlank(message = "Street is required")
+    private String street;
+
+    @NotBlank(message = "City is required")
+    private String city;
+
+    @NotBlank(message = "State is required")
+    private String state;
+
+    @NotBlank(message = "Zip Code is required")
+    private String zipCode;
+
+    // Constructors
+    public Address() {
+    }
+
+    public Address(String street, String city, String state, String zipCode) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+    }
+
+    // Getters and Setters
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+}
+----------------------
+
+package com;
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
+
+@RestController
+@RequestMapping("/api/addresses")
+public class AddressController {
+
+    private final Map<Integer, Address> addressMap = new HashMap<>();
+
+    // Add or update address
+    @PostMapping("/{id}") // http://localhost:8080/api/addresses/1
+    public ResponseEntity<String> addOrUpdateAddress(@PathVariable int id, @Valid @RequestBody Address address) {
+        addressMap.put(id, address);
+        return ResponseEntity.ok("Address saved/updated successfully for ID: " + id);
+    }
+
+    
+
+    // Get all addresses
+    @GetMapping // http://localhost:8080/api/addresses
+    public ResponseEntity<List<Address>> getAllAddresses() {
+        return ResponseEntity.ok(new ArrayList<>(addressMap.values()));
+    }
+}
+-----------------------------------------------------------
+Add below code in Employee class . And recreate constructor and getter setter.
+
+@Valid
+@NotNull(message = "Address is required")
+private Address address;
+-----------------------------------------------------------
+Create Employee	- http://localhost:8080/api/employees	(POST)
+Get Employees	- http://localhost:8080/api/employees	(GET)
+Get by ID		- http://localhost:8080/api/employees/101	(GET)
+Delete by ID		- http://localhost:8080/api/employees/101	(DELETE)
+Search by Name	- http://localhost:8080/api/employees/search?name=sai	(GET)
+Create Address	- http://localhost:8080/api/addresses/101	(POST)
+Get Address		- http://localhost:8080/api/addresses/101	(GET)
+=========================================================
+
+ 
+
